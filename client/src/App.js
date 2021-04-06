@@ -1,10 +1,19 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Landing from './pages/Landing';
+import NotFound from './pages/NotFound';
+ 
 import './App.css';
 
-function App() {
+const App = () => {
 	return (
-		<h1>Practose!</h1>	
-	);
+		<Router>
+			<Switch>			
+				<Route exact path='/' component={Landing} />			
+				<Route component={NotFound} />
+			</Switch>
+		</Router>
+	)	
 }
 
 export default App;

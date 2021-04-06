@@ -1,4 +1,4 @@
-import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOG_OUT, UPDATE_LOADING } from '../actions/types';
+import { LOGIN_SUCCESS, LOG_OUT, UPDATE_LOADING } from '../actions/types';
 
 const initialState = {
 	loggedIn: false,
@@ -6,7 +6,7 @@ const initialState = {
 	user: null,
 };
 
-export default function (state = initialState) {
+export default function (state = initialState, action) {
 	const { type, payload } = action;
     
 	switch (type) {
