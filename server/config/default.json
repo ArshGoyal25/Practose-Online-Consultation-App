@@ -1,0 +1,4 @@
+{
+    "mongoUri": "mongodb+srv://admin:admin123@cluster0.e2lcd.mongodb.net/practose",
+    "jwtSecret": "randomsecret"
+}

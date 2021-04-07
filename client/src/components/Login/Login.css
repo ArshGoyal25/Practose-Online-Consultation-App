@@ -1,0 +1,26 @@
+.login-container {
+    position: absolute;
+    left: 60%;
+    top: 20%;
+    width: 500px;
+}
+
+.login-form-container {
+    background-color: white;
+    padding: 36px;
+    min-height: 450px;
+    max-height: 450px;    
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.login-form-field {
+    margin-bottom: 24px !important;
+}
+
+.login-button {
+    margin-top: 36px !important;
+}
+
+.login-form {
+    margin-top: 60px;
+}

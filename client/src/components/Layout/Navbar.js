@@ -11,7 +11,7 @@ const Navbar = () => {
                 <Typography variant="h6">
                     Practose
                 </Typography>
-                <Button color="inherit">Login</Button>
+                {/* <Button color="inherit">Login</Button> */}
             </Toolbar>
         </AppBar>
     )
