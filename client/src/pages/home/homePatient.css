@@ -1,0 +1,16 @@
+.home-patient-item {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    height: 400px;
+    width: 100%;
+    text-align: center;    
+    cursor: pointer;
+}
+
+.home-patient-item-image {    
+    max-width: 350px;
+    margin-top: 50px
+}
+
+.home-patient-container {
+    margin-top: 20vh;
+}
