@@ -22,6 +22,7 @@ export default function (state = initialState, action) {
 			...state,
 			loggedIn: false,
 			loading: false,
+			user: null
 		};
 	case UPDATE_LOADING:
 		return {

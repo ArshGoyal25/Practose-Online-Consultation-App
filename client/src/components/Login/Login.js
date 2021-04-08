@@ -7,6 +7,7 @@ import './Login.css';
 
 import client from '../../utils/axios/client';
 import { showAlert } from '../../utils/alert/Alert';
+import { loginSuccesful } from '../../actions/auth';
 
 const Login = () => {
     const [value, setValue] = useState(0);
@@ -40,7 +41,7 @@ const Login = () => {
         client.post('/user/register', newUser)
         .then(res => {
             showAlert('Account created succesfully!', 'success');
-            setTimeout(() => window.location.reload(), 2000);
+            setTimeout(() => window.location.reload(), 1200);
         })
         .catch(err => {
             if(err.response)
@@ -56,7 +57,8 @@ const Login = () => {
         client.post('/user/login', user)
         .then(res => {
             showAlert('Login Succesful!', 'success');
-            setLoading(false);
+            localStorage.setItem('practoUser', res.data);
+            loginSuccesful(res.data);
         })
         .catch(err => {
             if(err.response)
