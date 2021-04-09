@@ -13,3 +13,10 @@ export const logout = () => {
         type: LOG_OUT
     })
 }
+
+export const updateLoading = (state) => {
+    store.dispatch({
+        type: UPDATE_LOADING,
+        payload: state
+    })
+}

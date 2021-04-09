@@ -57,7 +57,7 @@ const Login = () => {
         client.post('/user/login', user)
         .then(res => {
             showAlert('Login Succesful!', 'success');
-            localStorage.setItem('practoUser', res.data);
+            localStorage.setItem('practoUser', JSON.stringify(res.data));
             loginSuccesful(res.data);
         })
         .catch(err => {

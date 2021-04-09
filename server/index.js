@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/user', require('./routes/user'));
+app.use('/api/appointment', require('./routes/appointment'));
 
 connectToDB();
 

@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// const requireLogin = require('../../middleware/auth');
+const requireLogin = require('../middleware/auth');
 const User = require('../models/User');
 
 const router = express.Router();
@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
 		if(password !== confirmPassword) return res.status(400).json({
 			message: `Passwords don't match`
 		});
-		let user = await User.findOne({ email });		
+		let user = await User.findOne({ email });
 		if (user) return res.status(400).json({
 			message: 'An account has already been registered with this email. Do you want to login instead?'
 		});
@@ -28,10 +28,11 @@ router.post('/register', async (req, res) => {
 		const salt = await bcrypt.genSalt(10);
 		const hash = await bcrypt.hash(password, salt);
 		user = new User({
+			...req.body,
 			name,
 			email,
 			password: hash,
-			username: username.toLowerCase(),			
+			username: username.toLowerCase(),
 		});
 
 		await user.save();
@@ -94,23 +95,34 @@ router.post('/login', async (req, res) => {
 	}
 });
 
-//@route   /api/users/authenticateUser
+router.post('/doctors', async (req, res) => {
+	try {
+		const doctors = await User.find({ isDoctor: true }, 'name speciality profilePicture qualication rating qualification');
+		return res.status(200).json(doctors);		
+	} catch(err) {
+		console.log(err);
+		res.status(500).send('Server Error');
+	}
+});
+
+//@route   /api/user/authenticateUser
 //@desc    Login or Register a user front end
 //access   Private
 
-// router.post('/authenticateUser', requireLogin(true), async (req, res) => {
-// 	try {
-// 		if (req.user) {
-// 			const { _id, username, email, profilePicture, name } = req.user;
-// 			return res.status(200).json({ id: _id, username, email, profilePicture, name });
-// 		} else {
-// 			return res.status(404).send('User not found');
-// 		}
-// 	} catch (err) {
-// 		console.log(err);
-// 		return res.status(500).send('Server Error');
-// 	}
-// });
+router.post('/authenticateUser', requireLogin(true), async (req, res) => {
+	try {
+		return res.status(200).json({
+			token: req.header('x-auth-token'),
+			username: req.user.username,
+			name: req.user.name,
+			email: req.user.email
+		});
+	} catch(err) {
+		return res.status(500).json({
+			message: 'Internal server error'
+		});
+	}
+});
 
 // router.post('/checkUser', requireLogin(true), async (req, res) => {
 // 	// console.log(req.user, 'Hi');

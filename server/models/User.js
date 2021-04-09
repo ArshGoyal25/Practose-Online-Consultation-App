@@ -18,6 +18,37 @@ const User = new mongoose.Schema({
         type: String,
         required: [true, 'Username is required'],
         unique: true
+    },
+    isDoctor: {
+        type: Boolean,
+        required: [true]
+    },
+    phoneNumber: {
+        type: String,        
+    },
+    dateOfBirth: {
+        type: Date,
+    },
+    gender: {
+        type: String,
+    },
+    bloodGroup: {
+        type: String,
+    },
+    address: {
+        type: String,        
+    },
+    speciality: {
+        type: String,        
+    },
+    profilePicture: {
+        type: String,
+    },
+    qualification: {
+        type: String,
+    },
+    rating: {
+        type: Number,
     }
 })
 

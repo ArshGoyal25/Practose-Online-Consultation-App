@@ -21,3 +21,12 @@
 .appointment-time-picker {
     margin-left: 100px !important   ;
 }
+
+.selected-doctor-card {
+    margin-top: 24px;
+    width: 350px;
+}
+
+.appointment-confirm-button {
+    margin-top: 24px !important;
+}

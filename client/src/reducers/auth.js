@@ -1,9 +1,10 @@
 import { LOGIN_SUCCESS, LOG_OUT, UPDATE_LOADING } from '../actions/types';
 
 const initialState = {
-	loggedIn: true,
+	loggedIn: false,
 	loading: true,
 	user: null,
+	token: '',
 };
 
 export default function (state = initialState, action) {
@@ -16,6 +17,7 @@ export default function (state = initialState, action) {
 			loggedIn: true,
 			loading: false,
 			user: payload,
+			token: payload.token,
 		};
 	case LOG_OUT:
 		return {
@@ -27,7 +29,7 @@ export default function (state = initialState, action) {
 	case UPDATE_LOADING:
 		return {
 			...state,
-			loading: payload.loading
+			loading: payload
 		}
 	default:
 		return state;
