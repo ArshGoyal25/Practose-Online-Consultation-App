@@ -7,6 +7,7 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 import Landing from './pages/Landing/Landing';
 import NotFound from './pages/NotFound';
 import HomePatient from './pages/home/HomePatient';
+import CreateAppointment from './pages/createAppointment/CreateAppointment';
  
 import './App.css';
 
@@ -18,6 +19,7 @@ const App = (props) => {
 		<Router>
 			<Switch>
 				{landingPage}
+				<AuthenticatedRoute exact auth={true} path='/create/appointment' component={CreateAppointment} />
 				<AuthenticatedRoute auth={false} component={NotFound} />
 			</Switch>
 			<Alert></Alert>

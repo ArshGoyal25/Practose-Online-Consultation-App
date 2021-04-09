@@ -1,7 +1,7 @@
 import { LOGIN_SUCCESS, LOG_OUT, UPDATE_LOADING } from '../actions/types';
 
 const initialState = {
-	loggedIn: false,
+	loggedIn: true,
 	loading: true,
 	user: null,
 };

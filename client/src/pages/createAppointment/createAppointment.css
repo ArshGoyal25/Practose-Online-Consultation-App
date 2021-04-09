@@ -1,0 +1,23 @@
+.appointment-section {
+    padding: 24px;
+    width: 100%;;
+    border-bottom: 1px solid lightgrey;
+}
+
+.appointment-section-header {
+    margin-bottom: 12px !important;
+}
+
+.symptoms-container {
+    width: 100%;
+    padding: 6px;
+}
+
+.symptom-chip {
+    margin-right :12px;
+    margin-bottom: 12px;
+}
+
+.appointment-time-picker {
+    margin-left: 100px !important   ;
+}

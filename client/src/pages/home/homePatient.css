@@ -14,3 +14,8 @@
 .home-patient-container {
     margin-top: 20vh;
 }
+
+.home-patient-item-link {
+    text-decoration: none;
+    color: inherit;
+}
