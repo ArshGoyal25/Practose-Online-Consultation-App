@@ -17,8 +17,8 @@ import './App.css';
 const App = (props) => {
 	useEffect(() => {
 		let user = localStorage.getItem('practoUser');
-		if(!user) updateLoading(false);
-		user = JSON.parse(user);
+		if(!user) return updateLoading(false);
+		user = JSON.parse(user);		
 		const config = {
             headers: {
                 'Content-Type': 'application/json',
