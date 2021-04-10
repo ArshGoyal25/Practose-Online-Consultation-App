@@ -27,4 +27,15 @@ const requireLogin = (required) => async (req, res, next) => {
 	}
 };
 
-module.exports = requireLogin;
+const validateToken = async (token) => {
+	try {
+		const decoded = jwt.verify(token, config.get('jwtSecret'));
+		userId = decoded.id.slice(0, decoded.id.length / 2);
+		const user = await User.findById(userId);
+		return user;
+	} catch(err) {
+		return null;
+	}
+}
+
+module.exports = { requireLogin, validateToken };

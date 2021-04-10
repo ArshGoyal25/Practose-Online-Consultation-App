@@ -56,6 +56,7 @@ const Login = () => {
         setLoading(true);
         client.post('/user/login', user)
         .then(res => {
+            console.log(res.data);
             showAlert('Login Succesful!', 'success');
             localStorage.setItem('practoUser', JSON.stringify(res.data));
             loginSuccesful(res.data);

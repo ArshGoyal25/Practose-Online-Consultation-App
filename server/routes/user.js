@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const requireLogin = require('../middleware/auth');
+const { requireLogin } = require('../middleware/auth');
 const User = require('../models/User');
 
 const router = express.Router();
@@ -84,6 +84,7 @@ router.post('/login', async (req, res) => {
 			if (err) throw err;
 			res.status(200).json({
 				token,
+				id: user._id,
 				username: user.username,
 				name: user.name,				
 				email,
@@ -115,7 +116,8 @@ router.post('/authenticateUser', requireLogin(true), async (req, res) => {
 			token: req.header('x-auth-token'),
 			username: req.user.username,
 			name: req.user.name,
-			email: req.user.email
+			email: req.user.email,
+			id: req.id
 		});
 	} catch(err) {
 		return res.status(500).json({
@@ -124,6 +126,18 @@ router.post('/authenticateUser', requireLogin(true), async (req, res) => {
 	}
 });
 
+router.post('/getChats', requireLogin(true), async (req, res) => {
+	try {
+		const user = await User.findById(req.id).populate('chat');
+		return res.status(200).json({
+			chat: user.chat
+		});
+	} catch(err) {
+		return res.status(500).json({
+			message: 'Internal server error'
+		})
+	}
+})
 // router.post('/checkUser', requireLogin(true), async (req, res) => {
 // 	// console.log(req.user, 'Hi');
 // 	const { email } = req.body;

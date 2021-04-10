@@ -19,6 +19,16 @@ const User = new mongoose.Schema({
         required: [true, 'Username is required'],
         unique: true
     },
+    chat: {
+        type: Map,
+        of: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Chat'
+        },
+        default: {},
+        required: true
+        // Keys - User model id, value Chat model id
+    },
     isDoctor: {
         type: Boolean,
         required: [true]

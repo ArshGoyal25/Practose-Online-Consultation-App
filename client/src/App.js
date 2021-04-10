@@ -9,6 +9,7 @@ import Landing from './pages/Landing/Landing';
 import NotFound from './pages/NotFound';
 import HomePatient from './pages/home/HomePatient';
 import CreateAppointment from './pages/createAppointment/CreateAppointment';
+import Chat from './pages/chat/Chat';
 import {updateLoading, loginSuccesful} from './actions/auth';
 import client from './utils/axios/client';
  
@@ -44,6 +45,7 @@ const App = (props) => {
 			<Switch>
 				{landingPage}
 				<AuthenticatedRoute exact auth={true} path='/create/appointment' component={CreateAppointment} />
+				<AuthenticatedRoute exact auth={true} path='/chat' component={Chat} />
 				<AuthenticatedRoute auth={false} component={NotFound} />
 			</Switch>
 			<Alert></Alert>
