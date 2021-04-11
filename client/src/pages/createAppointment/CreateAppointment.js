@@ -117,7 +117,7 @@ const CreateAppointment = (props) => {
                                 ))}                        
                             </div>
                             <FormControl>
-                                <InputLabel htmlFor="standard-adornment-password">Enter Symptom</InputLabel>
+                                <InputLabel>Enter Symptom</InputLabel>
                                 <Input                                                        
                                     value={currentSymptom}
                                     onChange={e => setCurrentSymptom(e.target.value)}

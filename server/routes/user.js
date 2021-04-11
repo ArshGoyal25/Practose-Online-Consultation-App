@@ -96,7 +96,7 @@ router.post('/login', async (req, res) => {
 	}
 });
 
-router.post('/doctors', async (req, res) => {
+router.post('/doctors', requireLogin(true), async (req, res) => {
 	try {
 		const doctors = await User.find({ isDoctor: true }, 'name speciality profilePicture qualication rating qualification');
 		return res.status(200).json(doctors);		
@@ -105,6 +105,21 @@ router.post('/doctors', async (req, res) => {
 		res.status(500).send('Server Error');
 	}
 });
+
+router.post('/getChatUsers', requireLogin(true), async (req, res) => {
+	try {
+		if(req.user.isDoctor) {
+			const users = await User.find({}, 'name profilePicture isDoctor');
+			return res.status(200).json(users);
+		} else {
+			const users = await User.find({ isDoctor: true }, 'name speciality profilePicture qualication rating qualification isDoctor');
+			return res.status(200).json(users);
+		}
+	} catch(err) {
+		console.log(err);
+		res.status(500).send('Server error');
+	}
+})
 
 //@route   /api/user/authenticateUser
 //@desc    Login or Register a user front end

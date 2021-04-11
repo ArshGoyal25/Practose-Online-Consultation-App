@@ -10,14 +10,15 @@ import {
     Grid, AppBar, Toolbar, IconButton,
     Divider, InputBase, Paper, List,
     ListItem, ListItemAvatar, Avatar,
-    ListItemText
+    ListItemText, FormControl, InputLabel,
+    Input, InputAdornment
 } from '@material-ui/core';
 
 import {
     Autocomplete
 } from '@material-ui/lab';
 import SearchIcon from '@material-ui/icons/Search';
-
+import SendIcon from '@material-ui/icons/Send';
 import io from 'socket.io-client/dist/socket.io';
 import { initializeChat } from '../../actions/chat';
 import { showAlert } from '../../utils/alert/Alert';
@@ -28,9 +29,11 @@ const Chat = (props) => {
 
     const [socket, setSocket] = useState(null);
     const [chatData, setChatData] = useState(null);
-    const [doctors, setDoctors] = useState([]);
-    const [mappedDoctors, setMappedDoctors] = useState({}); // key: docId, value: doctor details
-    const [currentChat, setCurrentChat] = useState(null); // the id of user
+    const [chatUsers, setChatUsers] = useState([]);
+    const [mappedUsers, setMappedUsers] = useState({}); // key: userId, value: user details
+    const [currentChat, setCurrentChat] = useState(null); // the id of user whose chat is currently active
+    const [currentMessage, setCurrentMessage] = useState(''); // The text in the message input box
+
 
     useEffect(() => {
         const socket = io('http://localhost:8000');
@@ -40,13 +43,6 @@ const Chat = (props) => {
             })
             setSocket(socket);
         });
-        socket.on('newMessage', (chat) => {
-            const updatedMessages = chatData;
-            if(!(chat.from in updatedMessages))
-                updatedMessages[chat.from] = [];
-            updatedMessages[chat.from].push(chat);
-            setChatData({...updatedMessages});
-        })
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -62,19 +58,27 @@ const Chat = (props) => {
             console.log(err);
         })
         // Fetch doctors 
-        client.post('/user/doctors', {}, config)
+        client.post('/user/getChatUsers', {}, config)
         .then((res) => {
-            setDoctors(res.data);
-            const doctorObj = {};
-            for(const doctor of res.data) doctorObj[doctor._id] = doctor;
-            setMappedDoctors(doctorObj);
+            setChatUsers(res.data);
+            const userObj = {};
+            for(const user of res.data) userObj[user._id] = user;
+            setMappedUsers(userObj);
         })
         .catch(err => {
             console.log(err);
         })
     }, []);
     
-    if(socket === null || chatData === null) return <Loading/>
+    if(socket === null || chatData === null) return <Loading/>;
+
+    socket.on('newMessage', (chat) => {
+        const updatedMessages = {...chatData};
+        if(!(chat.from in updatedMessages))
+            updatedMessages[chat.from] = {messages: []};
+        updatedMessages[chat.from].messages.push(chat);
+        setChatData(updatedMessages);
+    })
 
     const sendMessage = (message, recipient) => {
         const messageObj = {
@@ -83,17 +87,27 @@ const Chat = (props) => {
             token: props.token
         }
         socket.emit('newMessage', messageObj, (ack) => {
-            if(!ack.success) showAlert(ack.message, 'error');
+            if(!ack.success) return showAlert(ack.message, 'error');
+            setCurrentMessage('');
+            const updatedChatData = {...chatData};
+            updatedChatData[recipient].messages.push(ack.message);
+            setChatData(updatedChatData);
         })
     }
 
     const selectChat = (id) => {
         if(!(id in chatData)) {
             const updatedChatData = chatData;
-            updatedChatData[id] = [];
+            updatedChatData[id] = {messages: []};
             setChatData(updatedChatData);
         }
         setCurrentChat(id);
+    }
+
+    const handleSendMessage = () => {
+        if(!currentMessage) return;
+        if(!currentMessage) return;
+        sendMessage(currentMessage, currentChat);
     }
 
 
@@ -110,10 +124,10 @@ const Chat = (props) => {
 
     const search = (
         <Autocomplete
-            options={doctors}
+            options={chatUsers}
             getOptionLabel={option => option.name}
-            onChange={(event, doctor) => {
-                if(doctor) selectChat(doctor._id);
+            onChange={(event, user) => {
+                if(user) selectChat(user._id);
             }}
             renderOption={option => (                                            
                 <Fragment>
@@ -146,10 +160,10 @@ const Chat = (props) => {
                         onClick={() => selectChat(id)}
                     >
                         <ListItemAvatar>
-                            <Avatar alt="doctor_display" src={mappedDoctors[id].profilePicture} />
+                            <Avatar alt="doctor_display" src={mappedUsers[id].profilePicture} />
                         </ListItemAvatar>
                         <ListItemText
-                            primary={mappedDoctors[id].name}
+                            primary={mappedUsers[id].name}
                         />
                     </ListItem>
                     <Divider/>
@@ -160,13 +174,15 @@ const Chat = (props) => {
     
     const chatMessages = (
         <Fragment>
-            {currentChat ?
-                chatData[currentChat].map((message) => {
-                    return <div className={`chat-message ${message.from == props.user.id ? 'self': 'other'}`}>
-                        {message.message}
-                    </div>
-                }): null
-            }
+            {currentChat ? (
+                (currentChat in chatData) ? (
+                    chatData[currentChat].messages.map((message) => {
+                        return <div className={`chat-message ${message.from == props.user.id ? 'self': 'other'}`}>
+                            {message.message}
+                        </div>
+                    })
+                ) : null
+            ): null}
         </Fragment>
     )
     
@@ -182,6 +198,17 @@ const Chat = (props) => {
                     </Grid>
                     <Grid className='chat-container-grid right-container' item md={8}>
                         {chatMessages}
+                        <Paper className='chat-send-message-container'>
+                            <InputBase
+                                className='chat-send-message-input'
+                                placeholder="Send message"
+                                value={currentMessage}
+                                onChange={e => setCurrentMessage(e.target.value)}
+                            />
+                            <IconButton onClick={handleSendMessage}>
+                                <SendIcon />
+                            </IconButton>
+                        </Paper>
                     </Grid>
                 </Grid>                
             </Container>

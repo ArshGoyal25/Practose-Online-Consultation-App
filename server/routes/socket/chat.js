@@ -10,7 +10,6 @@ const chat = (io, chatUsers) => {
 
         socket.on('initialize', async (data, callback) => {
             // Add user object to chatUsers
-            console.log("ID: ", data.id);
             const user = await User.findById(data.id);
             if(!user) return callback({ success: false, message: 'Invalid ID'});
             user.socketId = socket.id;
@@ -21,21 +20,25 @@ const chat = (io, chatUsers) => {
         socket.on('newMessage', async (data, callback) => {
             const user = await validateToken(data.token);
             if(!user) return callback({ success: false, message: 'Invalid token'});
-            const isFirstMessage = !(data.recipient in user.chat); // First message between the two participants
+            const isFirstMessage = !(user.chat.has(data.recipient)); // First message between the two participants
             const messageObj = {
                 from: user._id,
                 to: data.recipient,
                 message: data.message,
                 timestamp: new Date()
             }
-            if(data.recipient in chatUsers) io.to(chatUsers[data.recipient].socketId).emit(messageObj);
+            if(data.recipient in chatUsers) {
+                console.log("dude's online");
+                console.log(chatUsers[data.recipient].socketId);
+                io.to(chatUsers[data.recipient].socketId).emit('newMessage', messageObj);
+            }
             if(isFirstMessage) {
                 const newChat = new Chat({
                     messages: [messageObj],
-                })
+                })      
                 await newChat.save();
                 // Update chat field in sender
-                user.messages.set(recipient, newChat.id);
+                user.chat.set(data.recipient, newChat.id);
                 // Update chat field in recipient           
                 const recipientUser = await User.findById(data.recipient);
                 recipientUser.chat.set(user._id, newChat.id);
@@ -43,7 +46,7 @@ const chat = (io, chatUsers) => {
                 await user.save();
                 await recipientUser.save();
                 
-                if(recipient in chatUsers)
+                if(data.recipient in chatUsers)
                     chatUsers[data.recipient] = {...recipientUser, socketId: chatUsers[data.recipient].socketId};
                 chatUsers[user._id] = {...user, socketId: chatUsers[user._id].socketId };
             } else {
@@ -51,6 +54,7 @@ const chat = (io, chatUsers) => {
                 chatDoc.messages.push(messageObj);
                 await chatDoc.save();
             }
+            callback({ success: true, message: messageObj });
         })
     })
 }   

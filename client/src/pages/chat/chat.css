@@ -9,11 +9,30 @@
     flex: 1 !important;
 }
 
+.chat-send-message-input {
+    margin-left: 12px !important;
+    flex: 1 !important;
+}
+
 .chat-search-container {
     padding: 2px 4px;
     display: flex;
     align-items: center;
     width: 400;
+}
+
+.right-container {
+    position: relative;
+}
+
+.chat-send-message-container {
+    padding: 2px 4px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
 }
 
 .left-container {
@@ -47,4 +66,9 @@
 
 .chat-list-item.active {
     background-color: lightgray;    
+}
+
+.chat-input {
+    top: auto !important;
+    bottom: 0 !important;
 }

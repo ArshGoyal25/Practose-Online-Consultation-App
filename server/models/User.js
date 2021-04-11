@@ -31,7 +31,8 @@ const User = new mongoose.Schema({
     },
     isDoctor: {
         type: Boolean,
-        required: [true]
+        required: [true],
+        default: false
     },
     phoneNumber: {
         type: String,        
