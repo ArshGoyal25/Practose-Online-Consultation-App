@@ -35,18 +35,14 @@ import './findDoctor.css';
 
 
 const FindDoctor = (props) => {
-    const [appointment, setAppointment] = useState({
-        isRoutine: false,
-        symptoms: [],
-        appointmentDate: null,
-        appointmentTime: null,
-    })
-    const [currentSymptom, setCurrentSymptom] = useState('');
+    const [symptoms, setSymptoms] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
+    const [specialities, setSpecialities] = useState([]);
+    const [counts, setCounts] = useState({});
 
     useEffect(() => {
         client.post('/user/doctors')
@@ -62,48 +58,80 @@ const FindDoctor = (props) => {
 
 
     const handleDeleteSymptom = (symptom) => {
-        const updatedAppointment = {...appointment};
-        updatedAppointment.symptoms = appointment.symptoms.filter(x => x !== symptom);
-        setAppointment(updatedAppointment);
+        setSymptoms(symptoms.filter(x => x !== symptom));
     }
 
-    const handleAddSymptom = () => {
-        if(!currentSymptom) return;
-        const updatedAppointment = {...appointment};
-        updatedAppointment.symptoms.push(currentSymptom);
-        setAppointment(updatedAppointment);
+    const handleAddSymptom = (symptom) => {
+        if(!symptom) return;
+        const updatedSymptoms = [...symptoms, symptom];
+        setSymptoms(updatedSymptoms);
+        filterSpeciality(symptom);
     }
 
-    const handleConfirmAppointment = () => {
-        if(!selectedDoctor) return showAlert('Please select a doctor', 'warning');
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                'x-auth-token': props.token,
-            },
-        };
-        appointment.doctorId = selectedDoctor._id;
-        client.post('/appointment/create', appointment, config)
-        .then(res => {
-            setDialogOpen(false);
-            setTimeout(() => window.location.reload(), 1200);
-            showAlert('Appointment booked succesfully!', 'success');
+    // const handleConfirmAppointment = () => {
+    //     if(!selectedDoctor) return showAlert('Please select a doctor', 'warning');
+    //     const config = {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'x-auth-token': props.token,
+    //         },
+    //     };
+    //     appointment.doctorId = selectedDoctor._id;
+    //     client.post('/appointment/create', appointment, config)
+    //     .then(res => {
+    //         setDialogOpen(false);
+    //         setTimeout(() => window.location.reload(), 1200);
+    //         showAlert('Appointment booked succesfully!', 'success');
+    //     })
+    //     .catch(err => {
+    //         if(err.response)
+    //             showAlert(err.response.data.message, 'warning');
+    //         else showAlert('Server error, please try agian', 'error');
+    //         setDialogOpen(false);
+    //         setSubmitDisabled(false);
+    //     })
+    // }
+
+    function sort_object(obj) {
+        const items = Object.keys(obj).map(function(key) {
+            return [key, obj[key]];
+        });
+        items.sort(function(first, second) {
+            return second[1] - first[1];
+        });
+        const temp = items.slice(0,5)[0]
+        console.log(temp)
+        setSpecialities(temp)
+    } 
+
+    const filterSpeciality = (symptom) => {
+        if(!symptom) return;
+        console.log(symptoms_list[symptom])
+        symptoms_list[symptom].forEach( key => {
+            console.log(key)
+            if(counts[key] === undefined){
+                counts[key] = 1
+            }else{
+                counts[key] += 1
+            }
         })
-        .catch(err => {
-            if(err.response)
-                showAlert(err.response.data.message, 'warning');
-            else showAlert('Server error, please try agian', 'error');
-            setDialogOpen(false);
-            setSubmitDisabled(false);
-        })
+        // console.log(counts)
+        // var keys = Object.keys(symptoms_list);
+        // keys.forEach(function(key) {
+        //     console.log(key, symptoms_list[key])
+        // });
+        // console.log(symptoms_list)
+        sort_object(counts)
     }
 
-    const speciality = ["Cardiologist", 
-    "Audiologist", 
-    "Dentist", 
-    "ENT Specialist", 
-    "Gynaecologist", "Physician", "Paediatrician", "Pyschiatrist", "Radiologist", "Pulmologist", "Oncologist", "Neurologist", "Orthopedic"]
-    const symptoms = { Cold : [speciality[3], speciality[5]] , BodyPain : [speciality[5],speciality[10]], 
+    console.log(specialities)
+
+
+
+
+
+    const speciality = ["Cardiologist", "Audiologist", "Dentist", "ENT Specialist", "Gynaecologist", "General Physician", "Paediatrician", "Pyschiatrist", "Radiologist", "Pulmologist", "Oncologist", "Neurologist", "Orthopedic"]
+    const symptoms_list = { Cold : [speciality[5], speciality[3]] , BodyPain : [speciality[5],speciality[10]], 
         Fever : [speciality[5]], Hearing_Loss : [speciality[1]] , 
         Tooth_Pain : [speciality[2]] , Fracture : [speciality[12], speciality[7]] , MentalHealth : [speciality[7]], LungProblem : [speciality[9]]
     }
@@ -113,49 +141,20 @@ const FindDoctor = (props) => {
         <Layout>
             <Container>
                 <div className='appointment-section'>
-                    <Typography className='appointment-section-header'>Symptoms</Typography>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={appointment.isRoutine}
-                                onChange={e => setAppointment({ ...appointment, isRoutine: e.target.checked })}
-                                color="primary"
-                            />
-                        }
-                        label="Routine Checkup"
-                    /><br></br>
-                    {!appointment.isRoutine ? (
-                        <Fragment>
-                            <div className='symptoms-container'>
-                                {appointment.symptoms.map(symptom => (
-                                    <Chip className='symptom-chip' label={symptom} onDelete={() => {handleDeleteSymptom(symptom)}} color="primary" />
-                                ))}                        
-                            </div>
-                            <FormControl>
-                                <InputLabel htmlFor="standard-adornment-password">Enter Symptom</InputLabel>
-                                <Input                                                        
-                                    value={currentSymptom}
-
-                                />
-                            </FormControl>
-                        </Fragment>
-                    ) : null}                    
-                </div>
-                <div className='appointment-section'>
-                    <Typography className='appointment-section-header'>Pick Your Doctor</Typography> 
+                    <Typography className='appointment-section-header'>List of Doctors</Typography> 
                     <div className='symptoms-container'>
-                                {appointment.symptoms.map(symptom => (
+                                {symptoms.map(symptom => (
                                     <Chip className='symptom-chip' label={symptom} onDelete={() => {handleDeleteSymptom(symptom)}} color="primary" />
                                 ))}                        
-                    </div>                   
+                    </div>    
                     <Autocomplete
                         style={{ width: 300 }}
-                        options={Object.keys(symptoms)}
+                        options={Object.keys(symptoms_list)}
                         autoHighlight
                         getOptionLabel={option => option}
                         onChange={(event, symptom) => {
-                            handleAddSymptom();
-                            setCurrentSymptom(symptom);            
+                            handleAddSymptom(symptom);
+
                         }}
                         renderOption={option => (                            
                             <Tooltip title='add'>
@@ -167,13 +166,13 @@ const FindDoctor = (props) => {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Search Doctor"
+                                label="Enter Symptoms"
                                 variant="outlined"
                             />
                         )}
                     />
 
-                    <div style={{ height: 450, width: '100%' }}>
+                    <div style={{ height: 300, width: '100%' }}>
                         <DataGrid
                             columns={[
                             {
@@ -211,6 +210,11 @@ const FindDoctor = (props) => {
                             ]}
                             
                             rows={doctors}
+                            filterModel={{
+                                items: [
+                                  { columnField: 'speciality', operatorValue: 'contains', value: specialities[0]  },
+                                ],
+                              }}
                         />
                         </div>
 
@@ -228,7 +232,7 @@ const FindDoctor = (props) => {
                         </Card>
                     ): null}
                 </div>
-                <div className='appointment-section'>
+                {/* <div className='appointment-section'>
                     <Typography className='appointment-section-header'>Schedule Appointment</Typography>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
@@ -249,7 +253,7 @@ const FindDoctor = (props) => {
                             onChange={time => setAppointment({...appointment, appointmentTime: time})}
                         />
                     </MuiPickersUtilsProvider>                    
-                </div>
+                </div> */}
                 <Button 
                     onClick={() => {setDialogOpen(true)}} 
                     className='appointment-confirm-button' 
@@ -275,9 +279,9 @@ const FindDoctor = (props) => {
                     <Button onClick={() => {setDialogOpen(false)}} color="primary">
                         No
                     </Button>
-                    <Button disabled={submitDisabled} onClick={handleConfirmAppointment} color="primary" autoFocus>
+                    {/* <Button disabled={submitDisabled} onClick={handleConfirmAppointment} color="primary" autoFocus>
                         Yes
-                    </Button>
+                    </Button> */}
                 </DialogActions>
             </Dialog>
         </Layout>
