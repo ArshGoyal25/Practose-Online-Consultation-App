@@ -6,6 +6,8 @@ import client from '../../utils/axios/client';
 import { connect } from 'react-redux';
 import Loading from '../../components/Layout/Loading';
 import { DataGrid } from '@material-ui/data-grid';
+import { GridLinkOperator, XGrid } from '@material-ui/x-grid';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -99,9 +101,19 @@ const FindDoctor = (props) => {
         items.sort(function(first, second) {
             return second[1] - first[1];
         });
-        const temp = items.slice(0,5)[0]
-        console.log(temp)
-        setSpecialities(temp)
+        // const temp = items[0]
+        const filteredSpecialities = items.filter(x => x[1] == items[0][1])
+        // console.log("here" , temp1[0][0])
+        var updatedSpecialities = []
+        filteredSpecialities.forEach( key => {
+            // console.log(key[0])
+            // const updatedSpecialities = [...specialities, key[0]]
+            updatedSpecialities.push(key[0])
+            setSpecialities(updatedSpecialities)
+            // console.log("HAHHA", updatedSpecialities)
+        })
+        // console.log(Object.values(temp1))
+        // setSpecialities(temp)
     } 
 
     const filterSpeciality = (symptom) => {
@@ -115,7 +127,7 @@ const FindDoctor = (props) => {
                 counts[key] += 1
             }
         })
-        // console.log(counts)
+        console.log(counts)
         // var keys = Object.keys(symptoms_list);
         // keys.forEach(function(key) {
         //     console.log(key, symptoms_list[key])
@@ -124,7 +136,7 @@ const FindDoctor = (props) => {
         sort_object(counts)
     }
 
-    console.log(specialities)
+    console.log("HERE" , specialities)
 
 
 
@@ -173,7 +185,7 @@ const FindDoctor = (props) => {
                     />
 
                     <div style={{ height: 300, width: '100%' }}>
-                        <DataGrid
+                        <XGrid
                             columns={[
                             {
                                 field: 'profilePicture',
@@ -212,8 +224,10 @@ const FindDoctor = (props) => {
                             rows={doctors}
                             filterModel={{
                                 items: [
-                                  { columnField: 'speciality', operatorValue: 'contains', value: specialities[0]  },
+                                  { columnField: 'speciality', operatorValue: 'contains', value: specialities[0]},                                 { columnField: 'speciality', operatorValue: 'contains', value: specialities  },
+                                  { columnField: 'speciality', operatorValue: 'contains', value: specialities[1]}
                                 ],
+                                linkOperator: GridLinkOperator.Or,
                               }}
                         />
                         </div>
