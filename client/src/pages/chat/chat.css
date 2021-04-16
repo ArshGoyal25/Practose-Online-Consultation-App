@@ -25,12 +25,14 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    max-height: 80vh;
 }
 
 .chat-send-message-container {
     padding: 2px 4px;
     display: flex;
     align-items: center;
+    height: 6vh;
     box-sizing: border-box;
     width: 100%;
     position: absolute;
@@ -92,3 +94,17 @@
     top: auto !important;
     bottom: 0 !important;
 }
+
+.chat-message-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 74vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.chat-input-container {
+    display: flex;
+    flex-grow: 1;
+}   

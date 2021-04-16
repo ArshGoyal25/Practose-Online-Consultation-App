@@ -82,7 +82,8 @@ class Chat extends React.Component {
         this.setCurrentChat(id);
     }
 
-    handleSendMessage() {
+    handleSendMessage(event) {
+        event.preventDefault();
         if(!this.state.currentMessage) return;
         this.sendMessage(this.state.currentMessage, this.state.currentChat);
     }
@@ -223,18 +224,26 @@ class Chat extends React.Component {
                             {chatList}
                         </Grid>
                         <Grid className='chat-container-grid right-container' item xs={8}>
-                            {chatMessages}
-                            <Paper className='chat-send-message-container'>
-                                <InputBase
-                                    className='chat-send-message-input'
-                                    placeholder="Send message"
-                                    value={this.state.currentMessage}
-                                    onChange={e => this.setCurrentMessage(e.target.value)}
-                                />
-                                <IconButton onClick={this.handleSendMessage}>
-                                    <SendIcon />
-                                </IconButton>   
-                            </Paper>
+                            <div className='chat-message-container'>
+                                {chatMessages}
+                            </div>
+                            {this.state.currentChat? (
+                                    <div className='chat-input-container'>
+                                        <form onSubmit={this.handleSendMessage}>
+                                            <Paper className='chat-send-message-container'>
+                                                <InputBase
+                                                    className='chat-send-message-input'
+                                                    placeholder="Send message"
+                                                    value={this.state.currentMessage}
+                                                    onChange={e => this.setCurrentMessage(e.target.value)}
+                                                />
+                                                <IconButton type='submit'>
+                                                    <SendIcon />
+                                                </IconButton>
+                                            </Paper>
+                                        </form>
+                                    </div>
+                            ): null }
                         </Grid>
                     </Grid>                
                 </Container>
