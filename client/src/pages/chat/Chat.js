@@ -106,7 +106,6 @@ const Chat = (props) => {
 
     const handleSendMessage = () => {
         if(!currentMessage) return;
-        if(!currentMessage) return;
         sendMessage(currentMessage, currentChat);
     }
 
@@ -120,7 +119,6 @@ const Chat = (props) => {
             </Toolbar>
         </AppBar>
     )
-    const options = ['Option 1', 'Option 2'];
 
     const search = (
         <Autocomplete
@@ -177,8 +175,10 @@ const Chat = (props) => {
             {currentChat ? (
                 (currentChat in chatData) ? (
                     chatData[currentChat].messages.map((message) => {
+                        const timestamp = new Date(message.timestamp);
                         return <div className={`chat-message ${message.from == props.user.id ? 'self': 'other'}`}>
                             {message.message}
+                            <div className='chat-message-timestamp'>{timestamp.toLocaleString()}</div>
                         </div>
                     })
                 ) : null
@@ -191,12 +191,12 @@ const Chat = (props) => {
         <Layout>
             <Container>
                 <Grid container className='chat-container'>
-                    <Grid className='chat-container-grid left-container' item md={4}>
+                    <Grid className='chat-container-grid left-container' item xs={4}>
                         {chatHeader}
                         {search}
                         {chatList}
                     </Grid>
-                    <Grid className='chat-container-grid right-container' item md={8}>
+                    <Grid className='chat-container-grid right-container' item xs={8}>
                         {chatMessages}
                         <Paper className='chat-send-message-container'>
                             <InputBase

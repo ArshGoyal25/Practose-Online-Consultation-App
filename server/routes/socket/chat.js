@@ -28,8 +28,6 @@ const chat = (io, chatUsers) => {
                 timestamp: new Date()
             }
             if(data.recipient in chatUsers) {
-                console.log("dude's online");
-                console.log(chatUsers[data.recipient].socketId);
                 io.to(chatUsers[data.recipient].socketId).emit('newMessage', messageObj);
             }
             if(isFirstMessage) {

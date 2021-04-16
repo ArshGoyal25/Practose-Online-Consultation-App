@@ -23,6 +23,8 @@
 
 .right-container {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-send-message-container {
@@ -42,21 +44,39 @@
 
 .chat-message {
     padding: 12px;
-    border: 1px solid black;
-    display: block;
     margin-top: 12px;
-    border-radius: 6px;
+    border-radius: 6px;    
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message-timestamp {
+    font-size: smaller;
+    margin-top: 12px;
+}
+
+.chat-message.other .chat-message-timestamp {
+    align-self: flex-end;
+}
+
+.chat-message.self .chat-message-timestamp {
+    align-self: flex-start;
 }
 
 .chat-message.other {
     margin-left: 12px;
-    max-width: 50%;    
+    max-width: 50%;
+    align-self: flex-start;
+    background-color: lightsteelblue;
+    color: black;
 }
 
 .chat-message.self {
-    float: right;
     margin-right: 12px;
     max-width: 50%;
+    align-self: flex-end;
+    background-color: lightseagreen;
+    color: white;
 }
 
 
