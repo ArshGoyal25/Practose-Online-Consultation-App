@@ -43,13 +43,17 @@ router.post('/create', requireLogin(true), async (req, res) => {
 	}
 });
 
-// @route   POST /api/appointment/create
+// @route   POST /api/appointment/fetch
 // @desc    Creates a new appointment
 // access   Private
 router.post('/fetch', requireLogin(true), async (req, res) => {
 	try {
-		const docAppointments = await Appointment.find({ doctorId: req.id});
-		const patAppointments = await Appointment.find({ patientId: req.id });
+		const docAppointments = await Appointment.find({ doctorId: req.id })
+			.populate('doctorId', 'name speciality profilePicture rating qualification isDoctor')
+			.populate('patientId', 'name speciality profilePicture gender')
+		const patAppointments = await Appointment.find({ patientId: req.id }).populate('doctorId patientId')
+			.populate('doctorId', 'name speciality profilePicture rating qualification isDoctor')
+			.populate('patientId', 'name speciality profilePicture gender')
 		const appointments = [...docAppointments, ...patAppointments];
 		return res.status(200).json({
 			appointments

@@ -92,7 +92,7 @@ class Chat extends React.Component {
 
     componentDidMount() {
         const self = this;
-        const socket = io('http://localhost:8000');
+        const socket = io();
         socket.on('connect', () => {
             socket.emit('initialize', {id: this.props.user.id}, (ack) => {
                 if(!ack.success) showAlert(ack.message, 'error');

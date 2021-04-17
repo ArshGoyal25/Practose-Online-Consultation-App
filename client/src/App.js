@@ -15,6 +15,7 @@ import Chat from './pages/chat/Chat';
 import client from './utils/axios/client';
  
 import './App.css';
+import ViewAppointments from './pages/viewAppointments/ViewAppointments';
 
 const App = (props) => {
 	useEffect(() => {
@@ -46,6 +47,7 @@ const App = (props) => {
 			<Switch>
 				{landingPage}
 				<AuthenticatedRoute exact auth={true} path='/create/appointment' component={CreateAppointment} />
+				<AuthenticatedRoute exact auth={true} path='/view/appointment' component={ViewAppointments} />
 				<AuthenticatedRoute exact auth={true} path='/chat' component={Chat} />
 				<AuthenticatedRoute exact auth={true} path='/find/doctor' component={FindDoctor} />
 				<AuthenticatedRoute auth={false} component={NotFound} />
