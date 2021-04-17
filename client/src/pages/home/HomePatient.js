@@ -26,7 +26,7 @@ const HomePatient = () => {
                             </a>                            
                         </Grid>
                         <Grid item md={4}>
-                            <a className='home-patient-item-link' href="/doctors">
+                            <a className='home-patient-item-link' href="/find/doctor">
                                 <div className='home-patient-item'>
                                     <img 
                                         className='home-patient-item-image' 

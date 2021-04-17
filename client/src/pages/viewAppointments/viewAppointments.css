@@ -1,0 +1,42 @@
+.appointment-card {
+    display: flex;
+    padding: 12px;
+    width: 100%;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    margin: 6px 0px;
+    border-left: 4px solid lightgreen;
+}
+
+.appointment-card.past {
+    border-left: 4px solid blueviolet;
+}
+
+.appointment-card-pane {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.appointment-header {
+    font-size: 24px !important;
+    margin-bottom: 24px !important;
+}
+
+.appointment-card-user p {
+    letter-spacing: 0 !important;
+    font-size: 20px;
+    margin: 8px 12px !important;    
+}
+
+.appointment-date {
+    align-self: flex-end;
+    font-size: 18px;
+}
+.appointment-card-user {
+    display: flex;
+}
+
+.appointment-symptoms {
+    margin-top: 12px;
+    display: flex;
+}
