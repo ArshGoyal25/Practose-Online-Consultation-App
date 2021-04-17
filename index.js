@@ -29,6 +29,10 @@ app.use(express.json());
 app.use('/api/user', require('./server/routes/user'));
 app.use('/api/appointment', require('./server/routes/appointment'));
 
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+
 connectToDB();
 
 chat(io, chatUsers);
