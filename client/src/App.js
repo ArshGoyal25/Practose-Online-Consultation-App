@@ -46,10 +46,10 @@ const App = (props) => {
 		<Router>
 			<Switch>
 				{landingPage}
-				<AuthenticatedRoute exact auth={true} path='/create/appointment' component={CreateAppointment} />
-				<AuthenticatedRoute exact auth={true} path='/view/appointment' component={ViewAppointments} />
+				<AuthenticatedRoute exact auth={true} path='/create-appointment' component={CreateAppointment} />
+				<AuthenticatedRoute exact auth={true} path='/view-appointments' component={ViewAppointments} />
 				<AuthenticatedRoute exact auth={true} path='/chat' component={Chat} />
-				<AuthenticatedRoute exact auth={true} path='/find/doctor' component={FindDoctor} />
+				<AuthenticatedRoute exact auth={true} path='/doctors' component={FindDoctor} />
 				<AuthenticatedRoute auth={false} component={NotFound} />
 			</Switch>
 			<Alert></Alert>

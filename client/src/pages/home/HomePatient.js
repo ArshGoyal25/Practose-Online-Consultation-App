@@ -15,7 +15,7 @@ const HomePatient = () => {
                 <div className="home-patient-container">
                     <Grid container spacing={6}>
                         <Grid item md={4}>
-                            <a className='home-patient-item-link' href="/create/appointment">
+                            <a className='home-patient-item-link' href="/create-appointment">
                                 <div className='home-patient-item'>
                                     <img
                                         className='home-patient-item-image' 
@@ -26,7 +26,7 @@ const HomePatient = () => {
                             </a>                            
                         </Grid>
                         <Grid item md={4}>
-                            <a className='home-patient-item-link' href="/find/doctor">
+                            <a className='home-patient-item-link' href="/doctors">
                                 <div className='home-patient-item'>
                                     <img 
                                         className='home-patient-item-image' 
