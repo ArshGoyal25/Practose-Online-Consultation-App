@@ -13,16 +13,16 @@ import {
 import './viewAppointments.css';
 import {showAlert} from '../../utils/alert/Alert';
 
-const AppointmentCard = ({appointment, user, past}) => {
+const AppointmentCard = ({appointment, user, past, token}) => {
 
-    const handleDeleteAppointment = (appointmentId) => {
+    const handleDeleteAppointment = () => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                'x-auth-token': props.token,
+                'x-auth-token': token,
             },
         };
-        client.post('/appointment/delete', {appointmentId}, config)
+        client.post('/appointment/delete', {appointmentId: appointment._id}, config)
         .then(res => {
             showAlert('Appointment deleted!', 'success');
             setTimeout(() => window.location.reload(), 1200);
@@ -33,7 +33,6 @@ const AppointmentCard = ({appointment, user, past}) => {
             else showAlert('Server error, please try agian', 'error');
         })
     }
-    console.log(appointment);
     return (
         <div className={`appointment-card ${past ? 'past': ''}`}>
             <div className='appointment-card-pane left'>
@@ -64,7 +63,7 @@ const AppointmentCard = ({appointment, user, past}) => {
                 {appointment.isRoutine ?
                     <p className='appointment-routine'>Routine Appointment</p>
                 : null}
-                <Button variant="contained" color="secondary">
+                <Button variant="contained" color="secondary" onClick={handleDeleteAppointment}>
                     Delete Appointment
                 </Button>
             </div>
@@ -72,7 +71,7 @@ const AppointmentCard = ({appointment, user, past}) => {
     )
 }
 
-const CreateAppointment = (props) => {
+const ViewAppointments = (props) => {
     const [isLoading, setLoading] = useState(true);
     const [pastAppointments, setPastAppointments] = useState([]);
     const [appointments, setAppointments] = useState([]);
@@ -112,6 +111,7 @@ const CreateAppointment = (props) => {
                             <AppointmentCard 
                                 appointment={appointment}
                                 user={props.user}
+                                token={props.token}
                             />
                         ))}
                     </Fragment>
@@ -125,6 +125,7 @@ const CreateAppointment = (props) => {
                                 appointment={appointment}
                                 user={props.user}
                                 past={true}
+                                token={props.token}
                             />
                         ))}
                     </Fragment>
@@ -142,4 +143,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(CreateAppointment);
+export default connect(mapStateToProps)(ViewAppointments);
