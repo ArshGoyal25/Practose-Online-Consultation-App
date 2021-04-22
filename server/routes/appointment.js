@@ -12,7 +12,7 @@ const router = express.Router();
 router.post('/create', requireLogin(true), async (req, res) => {
 	let { doctorId, symptoms, appointmentDate, appointmentTime, isRoutine } = req.body;
 	try {
-		console.log(req.body);
+		const current = new Date();
 		let doctor = await User.findById(doctorId);
 		if(!doctor) return res.status(400).json({
 			message: 'Required doctor does not exist'
@@ -24,6 +24,9 @@ router.post('/create', requireLogin(true), async (req, res) => {
 		appointmentTime = new Date(appointmentTime);
 		appointmentDate.setHours(appointmentTime.getHours());
 		appointmentDate.setMinutes(appointmentTime.getMinutes());
+		if(appointmentDate < current) return res.status(400).json({
+			message: 'Please pick a date/time in the future'
+		})
 		const appointment = new Appointment({
 			patientId: req.id,
 			doctorId,
