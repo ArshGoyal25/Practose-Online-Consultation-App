@@ -13,6 +13,9 @@ const HomePatient = () => {
         <Layout>
             <Container>
                 <div className="home-patient-container">
+                    <a className='home-patient-item-link' href='/view-appointments'>
+                        <Button variant='contained' color='primary' className='view-appointments-button'>View Appointments</Button>
+                    </a>
                     <Grid container spacing={6}>
                         <Grid item md={4}>
                             <a className='home-patient-item-link' href="/create-appointment">

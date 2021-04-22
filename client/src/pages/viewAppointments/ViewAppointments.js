@@ -6,13 +6,34 @@ import { connect } from 'react-redux';
 import Loading from '../../components/Layout/Loading';
 
 import {
-    Card, CardHeader, Container, CardContent,
+    Card, CardHeader, Container, Button,
     Typography, InputLabel, Input, Chip, Avatar
 } from '@material-ui/core';
 
 import './viewAppointments.css';
+import {showAlert} from '../../utils/alert/Alert';
 
 const AppointmentCard = ({appointment, user, past}) => {
+
+    const handleDeleteAppointment = (appointmentId) => {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': props.token,
+            },
+        };
+        client.post('/appointment/delete', {appointmentId}, config)
+        .then(res => {
+            showAlert('Appointment deleted!', 'success');
+            setTimeout(() => window.location.reload(), 1200);
+        })
+        .catch(err => {
+            if(err.response)
+                showAlert(err.response.data.message, 'warning');
+            else showAlert('Server error, please try agian', 'error');
+        })
+    }
+    console.log(appointment);
     return (
         <div className={`appointment-card ${past ? 'past': ''}`}>
             <div className='appointment-card-pane left'>
@@ -42,7 +63,10 @@ const AppointmentCard = ({appointment, user, past}) => {
                 <p className='appointment-date'>{appointment.appointmentDate.toLocaleString()}</p>
                 {appointment.isRoutine ?
                     <p className='appointment-routine'>Routine Appointment</p>
-                : null}                
+                : null}
+                <Button variant="contained" color="secondary">
+                    Delete Appointment
+                </Button>
             </div>
         </div>
     )
