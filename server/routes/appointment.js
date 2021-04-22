@@ -63,5 +63,26 @@ router.post('/fetch', requireLogin(true), async (req, res) => {
 	}
 })
 
+router.post('/delete', requireLogin(true), async (req, res) => {
+	try {
+		const id = req.body.appointmentId;
+		const appointment = await Appointment.findById(id);
+		if(!appointment) return res.status(400).json({
+			message: `Appointment doesn't exist`
+		})
+		const current = new Date();
+		if(appointment.appointmentDate < current) return res.status(400).json({
+			message: `The appointment is over`
+		})
+		if(appointment.appointmentDate.getTime() - current.getTime() < 86400 * 1000) return res.status(400).json({
+			message: `Cannot delete appointments within a day`
+		})
+		await Appointment.deleteOne({ _id: id });
+		res.status(200).send('Appointment deleted');
+
+	} catch(err) {
+		res.status(500).send('Server Error');
+	}
+})
 
 module.exports = router;
